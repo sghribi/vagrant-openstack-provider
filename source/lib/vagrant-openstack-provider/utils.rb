@@ -11,6 +11,11 @@ module VagrantPlugins
           network.each do |network_detail|
             return network_detail['addr'] if network_detail['OS-EXT-IPS:type'] == 'floating'
           end
+
+          # Do not choose IPv6 address
+          network.delete_if do |network_detail|
+            network_detail['version'] == 6
+          end
         end
         fail Errors::UnableToResolveIP if addresses.size == 0
         if addresses.size == 1
